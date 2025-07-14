@@ -1,0 +1,936 @@
+Copy
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameStudio Pro - Next-Gen Gaming Experience</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .orbitron {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .gaming-button {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gaming-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+        
+        .gaming-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .gaming-button:hover::before {
+            left: 100%;
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.5), 0 0 40px rgba(78, 205, 196, 0.3);
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(78, 205, 196, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .game-card:hover::before {
+            opacity: 1;
+        }
+        
+        .expertise-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .expertise-item:hover {
+            transform: translateX(10px);
+            border-color: #4ecdc4;
+        }
+        
+        .particle-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .terminal-window {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #4ecdc4;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        
+        .terminal-window::before {
+            content: '● ● ●';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            color: #ff6b6b;
+            font-size: 12px;
+        }
+        
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
+        }
+        
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .glitch-text {
+            position: relative;
+            color: #fff;
+            font-weight: 700;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch-text::before {
+            animation: glitch-1 2s infinite;
+            color: #ff6b6b;
+            z-index: -1;
+        }
+        
+        .glitch-text::after {
+            animation: glitch-2 2s infinite;
+            color: #4ecdc4;
+            z-index: -2;
+        }
+        
+        @keyframes glitch-1 {
+            0%, 14%, 15%, 49%, 50%, 99%, 100% { transform: translateX(0); }
+            15%, 49% { transform: translateX(-2px); }
+        }
+        
+        @keyframes glitch-2 {
+            0%, 20%, 21%, 62%, 63%, 99%, 100% { transform: translateX(0); }
+            21%, 62% { transform: translateX(2px); }
+        }
+        
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .section-padding {
+            padding: 80px 0;
+        }
+        
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="orbitron text-2xl font-bold">
+                <span class="glitch-text" data-text="GameStudio Pro">GameStudio Pro</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link hover:text-cyan-400 transition-colors">Home</a>
+                <a href="#games" class="nav-link hover:text-cyan-400 transition-colors">Games</a>
+                <a href="#expertise" class="nav-link hover:text-cyan-400 transition-colors">Expertise</a>
+                <a href="#about" class="nav-link hover:text-cyan-400 transition-colors">About</a>
+                <a href="#media" class="nav-link hover:text-cyan-400 transition-colors">Media</a>
+                <a href="#contact" class="nav-link hover:text-cyan-400 transition-colors">Contact</a>
+            </div>
+            <button class="md:hidden text-white">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section relative">
+        <canvas id="heroCanvas" class="absolute inset-0 w-full h-full"></canvas>
+        <div class="relative z-10 text-center">
+            <h1 class="orbitron text-6xl md:text-8xl font-black mb-6 hero-title">
+                <span class="glitch-text" data-text="GAME">GAME</span>
+                <span class="text-cyan-400">STUDIO</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 hero-subtitle max-w-3xl mx-auto">
+                Crafting next-generation gaming experiences that push the boundaries of imagination
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button class="gaming-button">
+                    <i class="fas fa-play mr-2"></i>
+                    Explore Our Games
+                </button>
+                <button class="gaming-button">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Start Your Project
+                </button>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 floating-animation">
+            <i class="fas fa-chevron-down text-2xl text-cyan-400"></i>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="section-padding relative">
+        <canvas id="gamesCanvas" class="particle-bg"></canvas>
+        <div class="container mx-auto px-6">
+            <h2 class="orbitron text-4xl md:text-6xl font-bold text-center mb-16 section-title">
+                Our <span class="text-cyan-400">Games</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Game Card 1 -->
+                <div class="game-card p-6 game-item">
+                    <div class="relative mb-4 overflow-hidden rounded-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                            <i class="fas fa-gamepad text-6xl text-white"></i>
+                        </div>
+                        <div class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-sm">
+                            4.8★
+                        </div>
+                    </div>
+                    <h3 class="orbitron text-xl font-bold mb-2">Cyber Legends</h3>
+                    <p class="text-gray-300 mb-4">Action RPG • 1M+ Downloads</p>
+                    <div class="flex space-x-2 mb-4">
+                        <span class="platform-icon"><i class="fab fa-android"></i></span>
+                        <span class="platform-icon"><i class="fab fa-apple"></i></span>
+                        <span class="platform-icon"><i class="fab fa-amazon"></i></span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="gaming-button text-sm flex-1">
+                            <i class="fas fa-play mr-1"></i>
+                            Trailer
+                        </button>
+                        <button class="gaming-button text-sm flex-1">
+                            <i class="fas fa-store mr-1"></i>
+                            Store
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Card 2 -->
+                <div class="game-card p-6 game-item">
+                    <div class="relative mb-4 overflow-hidden rounded-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-600 to-teal-600 flex items-center justify-center">
+                            <i class="fas fa-space-shuttle text-6xl text-white"></i>
+                        </div>
+                        <div class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-sm">
+                            4.9★
+                        </div>
+                    </div>
+                    <h3 class="orbitron text-xl font-bold mb-2">Space Odyssey</h3>
+                    <p class="text-gray-300 mb-4">Strategy • 2M+ Downloads</p>
+                    <div class="flex space-x-2 mb-4">
+                        <span class="platform-icon"><i class="fab fa-android"></i></span>
+                        <span class="platform-icon"><i class="fab fa-apple"></i></span>
+                        <span class="platform-icon"><i class="fab fa-amazon"></i></span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="gaming-button text-sm flex-1">
+                            <i class="fas fa-play mr-1"></i>
+                            Trailer
+                        </button>
+                        <button class="gaming-button text-sm flex-1">
+                            <i class="fas fa-store mr-1"></i>
+                            Store
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Card 3 -->
+                <div class="game-card p-6 game-item">
+                    <div class="relative mb-4 overflow-hidden rounded-lg">
+                        <div class="w-full h-48 bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center">
+                            <i class="fas fa-fire text-6xl text-white"></i>
+                        </div>
+                        <div class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-sm">
+                            4.7★
+                        </div>
+                    </div>
+                    <h3 class="orbitron text-xl font-bold mb-2">Dragon's Realm</h3>
+                    <p class="text-gray-300 mb-4">Fantasy RPG • 3M+ Downloads</p>
+                    <div class="flex space-x-2 mb-4">
+                        <span class="platform-icon"><i class="fab fa-android"></i></span>
+                        <span class="platform-icon"><i class="fab fa-apple"></i></span>
+                        <span class="platform-icon"><i class="fab fa-amazon"></i></span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="gaming-button text-sm flex-1">
+                            <i class="fas fa-play mr-1"></i>
+                            Trailer
+                        </button>
+                        <button class="gaming-button text-sm flex-1">
+                            <i class="fas fa-store mr-1"></i>
+                            Store
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="expertise" class="section-padding bg-gray-900 relative">
+        <canvas id="expertiseCanvas" class="particle-bg"></canvas>
+        <div class="container mx-auto px-6">
+            <h2 class="orbitron text-4xl md:text-6xl font-bold text-center mb-16 section-title">
+                Our <span class="text-cyan-400">Expertise</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="expertise-item expertise-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-palette text-3xl text-cyan-400 mr-4"></i>
+                        <h3 class="orbitron text-xl font-bold">Game Design</h3>
+                    </div>
+                    <p class="text-gray-300">Crafting immersive gameplay experiences with innovative mechanics and compelling narratives.</p>
+                </div>
+                
+                <div class="expertise-item expertise-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-cube text-3xl text-cyan-400 mr-4"></i>
+                        <h3 class="orbitron text-xl font-bold">Unity 3D & Unreal</h3>
+                    </div>
+                    <p class="text-gray-300">Advanced development in industry-leading engines for cross-platform gaming solutions.</p>
+                </div>
+                
+                <div class="expertise-item expertise-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-chart-line text-3xl text-cyan-400 mr-4"></i>
+                        <h3 class="orbitron text-xl font-bold">Monetization</h3>
+                    </div>
+                    <p class="text-gray-300">Strategic revenue optimization through AppLovin, AdMob, and innovative monetization models.</p>
+                </div>
+                
+                <div class="expertise-item expertise-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-rocket text-3xl text-cyan-400 mr-4"></i>
+                        <h3 class="orbitron text-xl font-bold">ASO & Publishing</h3>
+                    </div>
+                    <p class="text-gray-300">Expert publishing across Google Play, Amazon Appstore, and iOS with ASO optimization.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-padding relative">
+        <canvas id="aboutCanvas" class="particle-bg"></canvas>
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="about-content">
+                    <h2 class="orbitron text-4xl md:text-6xl font-bold mb-8 section-title">
+                        About <span class="text-cyan-400">GameStudio Pro</span>
+                    </h2>
+                    <p class="text-lg text-gray-300 mb-6">
+                        We are a team of passionate developers, designers, and storytellers dedicated to creating 
+                        extraordinary gaming experiences that captivate players worldwide.
+                    </p>
+                    <p class="text-lg text-gray-300 mb-8">
+                        With years of experience in the gaming industry, we combine cutting-edge technology 
+                        with creative vision to deliver games that push boundaries and define new standards.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="stat-item text-center">
+                            <div class="orbitron text-3xl font-bold text-cyan-400 mb-2">10M+</div>
+                            <div class="text-sm text-gray-400">Total Downloads</div>
+                        </div>
+                        <div class="stat-item text-center">
+                            <div class="orbitron text-3xl font-bold text-cyan-400 mb-2">50+</div>
+                            <div class="text-sm text-gray-400">Games Published</div>
+                        </div>
+                        <div class="stat-item text-center">
+                            <div class="orbitron text-3xl font-bold text-cyan-400 mb-2">4.8★</div>
+                            <div class="text-sm text-gray-400">Average Rating</div>
+                        </div>
+                        <div class="stat-item text-center">
+                            <div class="orbitron text-3xl font-bold text-cyan-400 mb-2">25+</div>
+                            <div class="text-sm text-gray-400">Team Members</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual">
+                    <div class="w-full h-96 bg-gradient-to-br from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-8xl text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Section -->
+    <section id="media" class="section-padding bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="orbitron text-4xl md:text-6xl font-bold text-center mb-16 section-title">
+                Media <span class="text-cyan-400">Gallery</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="media-item bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg overflow-hidden cursor-pointer h-64 flex items-center justify-center" onclick="openLightbox('video1')">
+                    <i class="fas fa-play text-6xl text-white"></i>
+                </div>
+                <div class="media-item bg-gradient-to-br from-green-600 to-teal-600 rounded-lg overflow-hidden cursor-pointer h-64 flex items-center justify-center" onclick="openLightbox('video2')">
+                    <i class="fas fa-image text-6xl text-white"></i>
+                </div>
+                <div class="media-item bg-gradient-to-br from-red-600 to-pink-600 rounded-lg overflow-hidden cursor-pointer h-64 flex items-center justify-center" onclick="openLightbox('video3')">
+                    <i class="fas fa-gamepad text-6xl text-white"></i>
+                </div>
+                <div class="media-item bg-gradient-to-br from-yellow-600 to-orange-600 rounded-lg overflow-hidden cursor-pointer h-64 flex items-center justify-center" onclick="openLightbox('video4')">
+                    <i class="fas fa-film text-6xl text-white"></i>
+                </div>
+                <div class="media-item bg-gradient-to-br from-indigo-600 to-blue-600 rounded-lg overflow-hidden cursor-pointer h-64 flex items-center justify-center" onclick="openLightbox('video5')">
+                    <i class="fas fa-camera text-6xl text-white"></i>
+                </div>
+                <div class="media-item bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg overflow-hidden cursor-pointer h-64 flex items-center justify-center" onclick="openLightbox('video6')">
+                    <i class="fas fa-magic text-6xl text-white"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding relative">
+        <canvas id="contactCanvas" class="particle-bg"></canvas>
+        <div class="container mx-auto px-6">
+            <h2 class="orbitron text-4xl md:text-6xl font-bold text-center mb-16 section-title">
+                Mission <span class="text-cyan-400">Terminal</span>
+            </h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="terminal-window">
+                    <div class="mb-6">
+                        <p class="text-green-400 mb-2">>>> INITIATING CONTACT PROTOCOL...</p>
+                        <p class="text-cyan-400">>>> READY TO RECEIVE TRANSMISSION</p>
+                    </div>
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2 text-green-400">COMMANDER NAME:</label>
+                                <input type="text" class="form-input w-full" placeholder="Enter your name">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2 text-green-400">COMMUNICATION CHANNEL:</label>
+                                <input type="email" class="form-input w-full" placeholder="Enter your email">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-green-400">MISSION BRIEFING:</label>
+                            <textarea class="form-input w-full h-32" placeholder="Describe your project requirements..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2 text-green-400">MISSION TYPE:</label>
+                            <select class="form-input w-full">
+                                <option>Game Development</option>
+                                <option>Mobile Publishing</option>
+                                <option>Consultation</option>
+                                <option>Partnership</option>
+                            </select>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="gaming-button">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                TRANSMIT MESSAGE
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="orbitron text-xl font-bold mb-4">GameStudio Pro</h3>
+                    <p class="text-gray-400">Creating the future of gaming, one experience at a time.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Games</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-cyan-400">Cyber Legends</a></li>
+                        <li><a href="#" class="hover:text-cyan-400">Space Odyssey</a></li>
+                        <li><a href="#" class="hover:text-cyan-400">Dragon's Realm</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-cyan-400">Game Development</a></li>
+                        <li><a href="#" class="hover:text-cyan-400">Publishing</a></li>
+                        <li><a href="#" class="hover:text-cyan-400">Consultation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-cyan-400"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-cyan-400"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-cyan-400"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-cyan-400"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 GameStudio Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <div class="lightbox-close" onclick="closeLightbox()">&times;</div>
+            <div id="lightbox-media"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Canvas animations
+        function initCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            const particles = [];
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    size: Math.random() * 3 + 1,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+                    if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+                    
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(78, 205, 196, ${particle.opacity})`;
+                    ctx.fill();
+                    
+                    // Connect nearby particles
+                    particles.forEach(otherParticle => {
+                        const dx = particle.x - otherParticle.x;
+                        const dy = particle.y - otherParticle.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(particle.x, particle.y);
+                            ctx.lineTo(otherParticle.x, otherParticle.y);
+                            ctx.strokeStyle = `rgba(78, 205, 196, ${0.1 * (1 - distance / 100)})`;
+                            ctx.stroke();
+                        }
+                    });
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        // Initialize all canvases
+        ['heroCanvas', 'gamesCanvas', 'expertiseCanvas', 'aboutCanvas', 'contactCanvas'].forEach(initCanvas);
+
+        // GSAP Animations
+        // Hero section animations
+        gsap.fromTo('.hero-title', 
+            { opacity: 0, y: 100 },
+            { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" }
+        );
+
+        gsap.fromTo('.hero-subtitle', 
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 1, delay: 0.5, ease: "power3.out" }
+        );
+
+        // Section titles
+        gsap.utils.toArray('.section-title').forEach(title => {
+            gsap.fromTo(title, 
+                { opacity: 0, y: 50 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 1, 
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: title,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        // Game cards animation
+        gsap.utils.toArray('.game-item').forEach((card, index) => {
+            gsap.fromTo(card, 
+                { opacity: 0, y: 50, rotateY: 45 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    rotateY: 0,
+                    duration: 0.8, 
+                    delay: index * 0.2,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        // Expertise cards animation
+        gsap.utils.toArray('.expertise-card').forEach((card, index) => {
+            gsap.fromTo(card, 
+                { opacity: 0, x: -50 },
+                { 
+                    opacity: 1, 
+                    x: 0, 
+                    duration: 0.8, 
+                    delay: index * 0.1,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        // About content animation
+        gsap.fromTo('.about-content', 
+            { opacity: 0, x: -100 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 1, 
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: '.about-content',
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    toggleActions: "play none none reverse"
+                }
+            }
+        );
+
+        gsap.fromTo('.about-visual', 
+            { opacity: 0, x: 100 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 1, 
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: '.about-visual',
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    toggleActions: "play none none reverse"
+                }
+            }
+        );
+
+        // Stats animation
+        gsap.utils.toArray('.stat-item').forEach((stat, index) => {
+            gsap.fromTo(stat, 
+                { opacity: 0, scale: 0.5 },
+                { 
+                    opacity: 1, 
+                    scale: 1, 
+                    duration: 0.6, 
+                    delay: index * 0.1,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: stat,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        // Media items animation
+        gsap.utils.toArray('.media-item').forEach((item, index) => {
+            gsap.fromTo(item, 
+                { opacity: 0, scale: 0.8 },
+                { 
+                    opacity: 1, 
+                    scale: 1, 
+                    duration: 0.6, 
+                    delay: index * 0.1,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Lightbox functionality
+        function openLightbox(mediaId) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxMedia = document.getElementById('lightbox-media');
+            
+            // Create placeholder content
+            lightboxMedia.innerHTML = `
+                <div class="w-full h-96 bg-gradient-to-br from-purple-600 to-cyan-600 rounded-lg flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fas fa-play text-6xl text-white mb-4"></i>
+                        <p class="text-white text-xl">Media Preview: ${mediaId}</p>
+                    </div>
+                </div>
+            `;
+            
+            lightbox.classList.add('active');
+            gsap.fromTo(lightboxMedia, 
+                { opacity: 0, scale: 0.8 },
+                { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }
+            );
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+        }
+
+        // Close lightbox on background click
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show success message
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-check mr-2"></i>MESSAGE TRANSMITTED';
+            button.style.background = 'linear-gradient(45deg, #4ecdc4, #45b7aa)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = '';
+            }, 3000);
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('.gaming-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                gsap.to(this, { scale: 1.05, duration: 0.3 });
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                gsap.to(this, { scale: 1, duration: 0.3 });
+            });
+        });
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroCanvas = document.getElementById('heroCanvas');
+            if (heroCanvas) {
+                heroCanvas.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>
